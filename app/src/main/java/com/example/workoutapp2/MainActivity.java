@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        one = findViewById(R.id.hello);
+        one = findViewById(R.id.fw1);
         name = one.findViewById(R.id.name);
 
         name.setText("Yohoho");
