@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:numColumns="2"
         android:layout_gravity="center"
-        android:id="@+id/recycleView"/>
+        android:id="@+id/gridView"/>
 
     <Button
         android:layout_width="match_parent"
