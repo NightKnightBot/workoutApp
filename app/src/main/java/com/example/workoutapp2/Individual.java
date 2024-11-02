@@ -3,10 +3,20 @@ package com.example.workoutapp2;
 public class Individual {
     private int image;
     private String name;
+    private String description;
 
-    public Individual(int image, String name) {
+    public Individual(int image, String name, String description) {
         this.image = image;
         this.name = name;
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getImage() {

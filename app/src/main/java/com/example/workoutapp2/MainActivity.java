@@ -2,19 +2,25 @@ package com.example.workoutapp2;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private View one;
-    private TextView name;
+    private GridView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,16 +32,12 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        one = findViewById(R.id.fw1);
-        name = one.findViewById(R.id.name);
+        recyclerView = findViewById(R.id.recycleView);
+        ArrayList<Individual> arr = new ArrayList<>();
 
-        name.setText("Yohoho");
-        
-        one.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
-            }
-        });
+
+
+        IndividualAdapter adapter = new IndividualAdapter(this, arr);
+        recyclerView.setAdapter(adapter);
     }
 }
