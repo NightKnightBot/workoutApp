@@ -13,13 +13,19 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.example.workoutapp2.dbs.DatabaseClient;
+import com.example.workoutapp2.dbs.Exercise;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView selectedDesc;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -52,6 +59,20 @@ public class MainActivity extends AppCompatActivity {
         arr.add(new Individual(R.drawable.two, "Two", "description"));
         arr.add(new Individual(R.drawable.three, "Three", "Desc"));
         arr.add(new Individual(R.drawable.four, "Four", "description"));
+
+
+        // Insert data with Executor
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            for (Individual individual :
+                    arr) {
+                DatabaseClient.getInstance(this).getExerciseDatabase().exerciseDao().insertExercise(new Exercise(individual.getName(), individual.getImage(), individual.getDescription()));
+            }
+        });
+
+        executor.execute(() -> {
+            List<Exercise> exercises = DatabaseClient.getInstance(this).getExerciseDatabase().exerciseDao().getAllExercises();
+        });
 
         IndividualAdapter adapter = new IndividualAdapter(this, arr);
         gridView.setAdapter(adapter);
