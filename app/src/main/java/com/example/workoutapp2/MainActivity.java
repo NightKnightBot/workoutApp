@@ -80,6 +80,12 @@ public class MainActivity extends AppCompatActivity {
         }
         );
 
+//      Add exercise
+//
+//        executor.execute(()->{
+//            DatabaseClient.getInstance(MainActivity.this).getExerciseDatabase().exerciseDao().insertExercise(new Exercise());
+//        });
+
         adapter = new IndividualAdapter(this, workouts);
         gridView.setAdapter(adapter);
 

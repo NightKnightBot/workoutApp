@@ -10,11 +10,21 @@ public class Exercise {
     private String name;
     private int imageResource;
     private String description;
+    private String type;
 
-    public Exercise(String name, int imageResource, String description) {
+    public Exercise(String name, int imageResource, String description, String type) {
         this.name = name;
         this.imageResource = imageResource;
         this.description = description;
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public int getId() {

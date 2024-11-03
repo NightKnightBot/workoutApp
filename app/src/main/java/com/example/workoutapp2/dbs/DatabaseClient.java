@@ -11,7 +11,9 @@ public class DatabaseClient {
     private ExerciseDatabase exerciseDatabase;
     private DatabaseClient(Context context) {
         this.context = context;
-        exerciseDatabase = Room.databaseBuilder(context, ExerciseDatabase.class, "WorkoutDB").build();
+        exerciseDatabase = Room.databaseBuilder(context, ExerciseDatabase.class, "WorkoutDB")
+                .fallbackToDestructiveMigration()
+                .build();
     }
 
     public static synchronized DatabaseClient getInstance(Context context) {
