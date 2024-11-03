@@ -12,7 +12,7 @@ public class DatabaseClient {
     private DatabaseClient(Context context) {
         this.context = context;
         exerciseDatabase = Room.databaseBuilder(context, ExerciseDatabase.class, "WorkoutDB")
-                .fallbackToDestructiveMigration()
+//                .fallbackToDestructiveMigration()
                 .build();
     }
 
