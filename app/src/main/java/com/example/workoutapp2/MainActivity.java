@@ -35,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageView selectedImage;
     private TextView selectedName;
     private TextView selectedDesc;
+    ArrayList<Individual> workouts;
+
+    IndividualAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -46,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
+        workouts = new ArrayList<>();
 
         gridView = findViewById(R.id.gridView);
         linearLayout = findViewById(R.id.slidewoho);
@@ -60,34 +66,36 @@ public class MainActivity extends AppCompatActivity {
         arr.add(new Individual(R.drawable.three, "Three", "Desc"));
         arr.add(new Individual(R.drawable.four, "Four", "description"));
 
-
-        // Insert data with Executor
         Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-            for (Individual individual :
-                    arr) {
-                DatabaseClient.getInstance(this).getExerciseDatabase().exerciseDao().insertExercise(new Exercise(individual.getName(), individual.getImage(), individual.getDescription()));
-            }
-        });
 
         executor.execute(() -> {
-            List<Exercise> exercises = DatabaseClient.getInstance(this).getExerciseDatabase().exerciseDao().getAllExercises();
-        });
+            List<Exercise> exercises;
+            exercises = DatabaseClient.getInstance(MainActivity.this).getExerciseDatabase().exerciseDao().getIdLessThanFour();
+            runOnUiThread(() -> {
+                for (Exercise exercise :
+                        exercises) {
+                    workouts.add(new Individual(exercise.getImageResource(), exercise.getName(), exercise.getDescription()));
+                }
+            });
+        }
+        );
 
-        IndividualAdapter adapter = new IndividualAdapter(this, arr);
+        adapter = new IndividualAdapter(this, workouts);
         gridView.setAdapter(adapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Glide.with(MainActivity.this).load(arr.get(position).getImage()).into(selectedImage);
-                selectedName.setText(arr.get(position).getName());
-                selectedDesc.setText(arr.get(position).getDescription());
+                Glide.with(MainActivity.this).load(workouts.get(position).getImage()).into(selectedImage);
+                selectedName.setText(workouts.get(position).getName());
+                selectedDesc.setText(workouts.get(position).getDescription());
 
-                Toast.makeText(MainActivity.this, "Name "+arr.get(position).getName()+"\nDesc "+arr.get(position).getDescription(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Name "+ workouts.get(position).getName()+"\nDesc "+ workouts.get(position).getDescription(), Toast.LENGTH_SHORT).show();
                 slideUp();
             }
         });
+
+        loadExercises();
     }
 
     void slideUp() {
@@ -112,5 +120,22 @@ public class MainActivity extends AppCompatActivity {
         else {
             slideDown();
         }
+    }
+
+    private void loadExercises() {
+        Executor executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(() -> {
+            List<Exercise> exercises = DatabaseClient.getInstance(MainActivity.this)
+                    .getExerciseDatabase().exerciseDao().getAllExercises();
+
+            runOnUiThread(() -> {
+                workouts.clear();
+                for (Exercise exercise : exercises) {
+                    workouts.add(new Individual(exercise.getImageResource(), exercise.getName(), exercise.getDescription()));
+                }
+                adapter.notifyDataSetChanged();
+            });
+        });
     }
 }

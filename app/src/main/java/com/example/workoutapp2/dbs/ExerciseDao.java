@@ -15,4 +15,7 @@ public interface ExerciseDao {
 
     @Query("SELECT * FROM exercise")
     List<Exercise> getAllExercises();
+
+    @Query("SELECT * FROM exercise WHERE id > 4")
+    List<Exercise> getIdLessThanFour();
 }
