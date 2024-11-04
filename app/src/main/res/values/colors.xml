@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="background">#FF423851</color>
     <color name="backgroundAlt">#967CB8</color>
+    <color name="scheduleAdapter">#7FE27F</color>
 </resources>

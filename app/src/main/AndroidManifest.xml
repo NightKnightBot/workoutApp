@@ -13,6 +13,9 @@
         android:theme="@style/Theme.WorkoutApp2"
         tools:targetApi="31">
         <activity
+            android:name=".PickExercises"
+            android:exported="false" />
+        <activity
             android:name=".WorkoutSchedule"
             android:exported="false" />
         <activity

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Schedule {
     private String scheduleName;
-    private List<Exercise> exerciseList;
+    private List<Individual> exerciseList;
 
     public String getScheduleName() {
         return scheduleName;
@@ -16,15 +16,15 @@ public class Schedule {
         this.scheduleName = scheduleName;
     }
 
-    public List<Exercise> getExerciseList() {
+    public List<Individual> getExerciseList() {
         return exerciseList;
     }
 
-    public void setExerciseList(List<Exercise> exerciseList) {
+    public void setExerciseList(List<Individual> exerciseList) {
         this.exerciseList = exerciseList;
     }
 
-    public Schedule(String scheduleName, List<Exercise> exerciseList) {
+    public Schedule(String scheduleName, List<Individual> exerciseList) {
         this.scheduleName = scheduleName;
         this.exerciseList = exerciseList;
     }

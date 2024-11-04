@@ -1,13 +1,22 @@
 package com.example.workoutapp2;
 
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -26,6 +35,7 @@ public class WorkoutSchedule extends AppCompatActivity {
     private TextView noSchedules;
     private ArrayList<Schedule> schedulesList;
     private Button addSchedules;
+    ScheduleAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,20 +51,50 @@ public class WorkoutSchedule extends AppCompatActivity {
         schedules = findViewById(R.id.scheduleView);
         noSchedules = findViewById(R.id.noSchedules);
         addSchedules = findViewById(R.id.schedulesButton);
+        ScheduleHolder.clearSchedule();
 
-        loadSchedules();
+        if(schedulesList==null) {
+            loadSchedules();
+        }
+
+        adapter = new ScheduleAdapter(WorkoutSchedule.this, schedulesList);
+
+
+        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult o) {
+                        if(o.getResultCode()== Activity.RESULT_OK) {
+                            Toast.makeText(WorkoutSchedule.this, "Run after back", Toast.LENGTH_SHORT).show();
+                            schedulesList.add(ScheduleHolder.getSchedule());
+                            saveSchedule();
+                            Toast.makeText(WorkoutSchedule.this, ""+schedulesList.size(), Toast.LENGTH_SHORT).show();
+                            adapter.notifyDataSetChanged();
+                            schedules.setVisibility(View.VISIBLE);
+                            noSchedules.setVisibility(View.GONE);
+                        }
+                    }
+                }
+        );
+
+        schedules.setAdapter(adapter);
+
+        addSchedules.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(WorkoutSchedule.this, PickExercises.class);
+                activityResultLauncher.launch(intent);
+            }
+        });
+
+        Toast.makeText(this, ""+schedulesList.size(), Toast.LENGTH_SHORT).show();
 
         if(schedulesList.isEmpty()) {
             schedules.setVisibility(View.GONE);
             noSchedules.setVisibility(View.VISIBLE);
         }
 
-        addSchedules.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
     }
 
     public void saveSchedule() {
@@ -62,7 +102,7 @@ public class WorkoutSchedule extends AppCompatActivity {
         SharedPreferences.Editor editor = preferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(schedulesList);
-        editor.putString("Schedules",json);
+        editor.putString("schedules",json);
         editor.apply();
     }
 

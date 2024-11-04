@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 workouts.clear();
                 for (Exercise exercise : exercises) {
-                    workouts.add(new Individual(exercise.getImageResource(), exercise.getName(), exercise.getDescription()));
+                    workouts.add(new Individual(exercise.getImageResource(), exercise.getName(), exercise.getDescription(), exercise.getType()));
                 }
                 adapter.notifyDataSetChanged();
             });
