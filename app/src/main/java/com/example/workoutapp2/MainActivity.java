@@ -1,10 +1,12 @@
 package com.example.workoutapp2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.example.workoutapp2.dbs.DatabaseClient;
 import com.example.workoutapp2.dbs.Exercise;
+import com.example.workoutapp2.dbs.ExerciseDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView selectedDesc;
     ArrayList<Individual> workouts;
 
+    private Button selectWorkout;
+
+    Executor executor;
+
     IndividualAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        executor = Executors.newSingleThreadExecutor();
 
         workouts = new ArrayList<>();
 
@@ -58,33 +66,39 @@ public class MainActivity extends AppCompatActivity {
         selectedImage = findViewById(R.id.selectedImage);
         selectedName = findViewById(R.id.selectedName);
         selectedDesc = findViewById(R.id.selectedDesc);
+        selectWorkout = findViewById(R.id.selectWorkout);
 
-        ArrayList<Individual> arr = new ArrayList<>();
+//        Add exercise
 
-        arr.add(new Individual(R.drawable.one, "One", "Desc"));
-        arr.add(new Individual(R.drawable.two, "Two", "description"));
-        arr.add(new Individual(R.drawable.three, "Three", "Desc"));
-        arr.add(new Individual(R.drawable.four, "Four", "description"));
-
-        Executor executor = Executors.newSingleThreadExecutor();
-
-        executor.execute(() -> {
-            List<Exercise> exercises;
-            exercises = DatabaseClient.getInstance(MainActivity.this).getExerciseDatabase().exerciseDao().getIdLessThanFour();
-            runOnUiThread(() -> {
-                for (Exercise exercise :
-                        exercises) {
-                    workouts.add(new Individual(exercise.getImageResource(), exercise.getName(), exercise.getDescription()));
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                ExerciseDao dao = DatabaseClient.getInstance(MainActivity.this).getExerciseDatabase().exerciseDao();
+                boolean databaseIsEmpty = dao.getRowCount() == 0;
+                if(databaseIsEmpty) {
+                    dao.insertExercise(new Exercise("Exercise 1", R.drawable.one, "Descripton 1", "chest"));
+                    dao.insertExercise(new Exercise("Exercise 2", R.drawable.two, "Descripton 2", "legs"));
+                    dao.insertExercise(new Exercise("Exercise 3", R.drawable.three, "Descripton 3", "arms"));
+                    dao.insertExercise(new Exercise("Exercise 4", R.drawable.four, "Descripton 4", "back"));
+                    
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Database has been populated", Toast.LENGTH_SHORT).show();
+                            loadExercises();
+                        }
+                    });
                 }
-            });
-        }
-        );
-
-//      Add exercise
-//
-//        executor.execute(()->{
-//            DatabaseClient.getInstance(MainActivity.this).getExerciseDatabase().exerciseDao().insertExercise(new Exercise());
-//        });
+                else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Database is full", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
 
         adapter = new IndividualAdapter(this, workouts);
         gridView.setAdapter(adapter);
@@ -95,13 +109,19 @@ public class MainActivity extends AppCompatActivity {
                 Glide.with(MainActivity.this).load(workouts.get(position).getImage()).into(selectedImage);
                 selectedName.setText(workouts.get(position).getName());
                 selectedDesc.setText(workouts.get(position).getDescription());
-
-                Toast.makeText(MainActivity.this, "Name "+ workouts.get(position).getName()+"\nDesc "+ workouts.get(position).getDescription(), Toast.LENGTH_SHORT).show();
                 slideUp();
             }
         });
 
         loadExercises();
+
+        selectWorkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, WorkoutSchedule.class);
+                startActivity(intent);
+            }
+        });
     }
 
     void slideUp() {
@@ -129,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadExercises() {
-        Executor executor = Executors.newSingleThreadExecutor();
+        executor = Executors.newSingleThreadExecutor();
 
         executor.execute(() -> {
             List<Exercise> exercises = DatabaseClient.getInstance(MainActivity.this)

@@ -18,4 +18,7 @@ public interface ExerciseDao {
 
     @Query("SELECT * FROM exercise WHERE id > 4")
     List<Exercise> getIdLessThanFour();
+
+    @Query("SELECT COUNT(*) FROM exercise")
+    int getRowCount();
 }
