@@ -69,6 +69,12 @@ public class WorkoutSchedule extends AppCompatActivity {
                         if(o.getResultCode()== Activity.RESULT_OK) {
                             Toast.makeText(WorkoutSchedule.this, "Run after back", Toast.LENGTH_SHORT).show();
                             schedulesList.add(ScheduleHolder.getSchedule());
+                            for (Schedule schedule1 :
+                                    schedulesList) {
+                                if (schedule1.getExerciseList().isEmpty()) {
+                                    schedulesList.remove(schedule1);
+                                }
+                            }
                             saveSchedule();
                             Toast.makeText(WorkoutSchedule.this, ""+schedulesList.size(), Toast.LENGTH_SHORT).show();
                             adapter.notifyDataSetChanged();
@@ -96,6 +102,21 @@ public class WorkoutSchedule extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(WorkoutSchedule.this, PickExercises.class);
                 activityResultLauncher.launch(intent);
+            }
+        });
+
+        schedules.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(WorkoutSchedule.this, "Removed Schedule", Toast.LENGTH_SHORT).show();
+                schedulesList.remove(i);
+                adapter.notifyDataSetChanged();
+                saveSchedule();
+                if(schedulesList.isEmpty()) {
+                    schedules.setVisibility(View.GONE);
+                    noSchedules.setVisibility(View.VISIBLE);
+                }
+                return true;
             }
         });
 

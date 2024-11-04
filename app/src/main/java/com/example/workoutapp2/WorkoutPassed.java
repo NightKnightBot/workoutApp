@@ -26,6 +26,8 @@ public class WorkoutPassed extends AppCompatActivity {
             return insets;
         });
 
+        backBtn = findViewById(R.id.wktBack);
+
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

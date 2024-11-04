@@ -108,9 +108,18 @@ public class PickExercises extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ScheduleHolder.setSchedule(new Schedule(nameOfSchedule.getText().toString(), scheduleExercises));
-                setResult(Activity.RESULT_OK);
-                finish();
+                Schedule newSchedule = new Schedule(nameOfSchedule.getText().toString(), scheduleExercises);
+                if(newSchedule.getScheduleName().isEmpty() || newSchedule.getScheduleName().isBlank()) {
+                    Toast.makeText(PickExercises.this, "Enter Schedule Name", Toast.LENGTH_SHORT).show();
+                } else if (newSchedule.getExerciseList().isEmpty()) {
+                    Toast.makeText(PickExercises.this, "Please Add Exercises", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    ScheduleHolder.setSchedule(newSchedule);
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                }
+
             }
         });
     }

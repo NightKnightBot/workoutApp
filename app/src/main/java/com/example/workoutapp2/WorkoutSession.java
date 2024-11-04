@@ -1,28 +1,34 @@
 package com.example.workoutapp2;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import android.content.Context;
+import android.view.inputmethod.InputMethodManager;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class WorkoutSession extends AppCompatActivity {
 
-    private TextView schedName;
+    private TextView schedName, completBtn;
     private EditText numberReps;
     private ListView workList;
-    private Button completBtn;
+    WorkoutAdapter workoutAdapter;
+    int sizeOfList;
 
     int repsCompleted = 0;
 
@@ -39,32 +45,70 @@ public class WorkoutSession extends AppCompatActivity {
 
         Schedule schedule = ScheduleHolder.getSchedule();
         ScheduleHolder.clearSchedule();
-
+        sizeOfList = schedule.getExerciseList().size();
 
         schedName = findViewById(R.id.nameOfSched);
         numberReps = findViewById(R.id.repNumber);
         workList = findViewById(R.id.workoutList);
         completBtn = findViewById(R.id.confirmCompletionem);
 
+        schedName.setText(schedule.getScheduleName().toString());
+
         List<Individual> individuals = schedule.getExerciseList();
-        WorkoutAdapter workoutAdapter = new WorkoutAdapter(WorkoutSession.this, individuals);
+        workoutAdapter = new WorkoutAdapter(WorkoutSession.this, individuals);
         workList.setAdapter(workoutAdapter);
 
-        completBtn.setOnClickListener(new View.OnClickListener() {
+//        completBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                repsCompleted++;
+//                int target = Integer.parseInt(numberReps.getText().toString());
+//                if(repsCompleted >= target){
+//                    Intent intent = new Intent(WorkoutSession.this, WorkoutPassed.class);
+//                    startActivity(intent);
+//                }
+//                else{
+//                    completBtn.setText("Reps Completed: " + repsCompleted);
+//                }
+//            }
+//        });
+
+        workList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                repsCompleted++;
-                int target = Integer.parseInt(numberReps.getText().toString());
-                if(repsCompleted >= target){
-                    Intent intent = new Intent(WorkoutSession.this, WorkoutPassed.class);
-                    startActivity(intent);
-                }
-                else{
-                    completBtn.setText("Reps Completed: " + repsCompleted);
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                numberReps.clearFocus();
+                hideKeyboard(view);
+                view.setBackgroundColor(getResources().getColor(R.color.scheduleAdapter));
+                sizeOfList--;
+                if(sizeOfList <= 0) {
+                    Toast.makeText(WorkoutSession.this, "toasty", Toast.LENGTH_SHORT).show();
+                    int count = workList.getChildCount();
+                    for (int iter = 0; iter<count; iter++) {
+                        View viewChild = workList.getChildAt(iter);
+                        viewChild.setBackgroundColor(Color.TRANSPARENT);
+                        sizeOfList = schedule.getExerciseList().size();
+
+                    }
+
+                    repsCompleted++;
+                    int target = Integer.parseInt(numberReps.getText().toString());
+                    if(repsCompleted >= target){
+                        Intent intent = new Intent(WorkoutSession.this, WorkoutPassed.class);
+                        startActivity(intent);
+                    }
+                    else{
+                        completBtn.setText("Reps Completed: " + repsCompleted);
+                    }
                 }
             }
         });
-
-
     }
+
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
 }
