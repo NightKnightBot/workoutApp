@@ -81,6 +81,16 @@ public class WorkoutSchedule extends AppCompatActivity {
 
         schedules.setAdapter(adapter);
 
+        schedules.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(WorkoutSchedule.this, WorkoutSession.class);
+                ScheduleHolder.clearSchedule();
+                ScheduleHolder.setSchedule(schedulesList.get(i));
+                startActivity(intent);
+            }
+        });
+
         addSchedules.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
