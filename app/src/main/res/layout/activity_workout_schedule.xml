@@ -30,7 +30,7 @@
 
         <ListView
             android:id="@+id/scheduleView"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="569dp"
             android:layout_gravity="center" />
 
