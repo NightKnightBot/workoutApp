@@ -6,12 +6,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -34,10 +37,15 @@ public class PickExercises extends AppCompatActivity {
     private Executor executor;
     private GridView gridView;
     private EditText nameOfSchedule;
+    String crit;
+    private Spinner filterSpin;
     ArrayList<Individual> individuals;
     List<Individual> scheduleExercises;
+
+    ArrayList<Individual> pickedArrayList;
     IndividualAdapter adapter;
     Schedule schedule;
+    List<Exercise> exerciseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,10 +88,88 @@ public class PickExercises extends AppCompatActivity {
         nameOfSchedule = findViewById(R.id.nameOfSchedule);
         gridView = findViewById(R.id.exercisePickerGridView);
         gridView.setAdapter(adapter);
+        filterSpin = findViewById(R.id.filterSpinner);
+
+        ArrayList<String> filterList = new ArrayList<>();
+        filterList.add("All");
+        filterList.add("Arms");
+        filterList.add("Legs");
+        filterList.add("Shoulders");
+        filterList.add("Chest");
+        filterList.add("Core");
+        filterList.add("Back");
+
+        ArrayAdapter<String> filterAdapter = new ArrayAdapter<>(PickExercises.this, android.R.layout.simple_list_item_1, filterList);
+        filterSpin.setAdapter(filterAdapter);
+        exerciseList = new ArrayList<>();
+
+        filterSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                crit = filterList.get(position).toLowerCase();
+                Toast.makeText(PickExercises.this, "crit: "+crit, Toast.LENGTH_SHORT).show();
+                Executor executor1 = Executors.newSingleThreadExecutor();
+
+                if(crit.equalsIgnoreCase("All")){
+                    executor1.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            exerciseList = DatabaseClient.getInstance(PickExercises.this).getExerciseDatabase().exerciseDao().getAllExercises();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    individuals.clear();
+                                    for (Exercise exercise :
+                                            exerciseList) {
+                                        individuals.add(new Individual(exercise.getImageResource(), exercise.getName(), exercise.getDescription(),exercise.getType()));
+                                    }
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    });
+                }
+                else {
+                    executor1.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            exerciseList = DatabaseClient.getInstance(PickExercises.this).getExerciseDatabase().exerciseDao().getExerciseOfType(crit);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(PickExercises.this, ""+exerciseList.size(), Toast.LENGTH_SHORT).show();
+                                    individuals.clear();
+                                    for (Exercise exercise :
+                                            exerciseList) {
+                                        individuals.add(new Individual(exercise.getImageResource(), exercise.getName(), exercise.getDescription(),exercise.getType()));
+                                    }
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Toast.makeText(PickExercises.this, "No Filters Active", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+
+        Toast.makeText(PickExercises.this, ""+exerciseList.size(), Toast.LENGTH_SHORT).show();
+
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if( !pickedArrayList.contains(individuals.get(i)) ) {
+                    pickedArrayList.add(individuals.get(i));
+                }
                 int currentColor = Color.TRANSPARENT;
 
                 if (view.getBackground() instanceof ColorDrawable) {
@@ -101,6 +187,7 @@ public class PickExercises extends AppCompatActivity {
                     view.setBackgroundColor(ContextCompat.getColor(PickExercises.this, R.color.backgroundAlt));
                     scheduleExercises.add(individuals.get(i));
                 }
+
             }
         });
 

@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
                     dao.insertExercise(new Exercise("Exercise 2", R.drawable.two, "Descripton 2", "legs"));
                     dao.insertExercise(new Exercise("Exercise 3", R.drawable.three, "Descripton 3", "arms"));
                     dao.insertExercise(new Exercise("Exercise 4", R.drawable.four, "Descripton 4", "back"));
+                    dao.insertExercise(new Exercise("Exercise 5", R.drawable.four, "Descripton 5", "core"));
+                    dao.insertExercise(new Exercise("Exercise 6", R.drawable.four, "Descripton 6", "shoulders"));
                     
                     runOnUiThread(new Runnable() {
                         @Override
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
         executor.execute(() -> {
             List<Exercise> exercises = DatabaseClient.getInstance(MainActivity.this)
-                    .getExerciseDatabase().exerciseDao().getAllExercises();
+                    .getExerciseDatabase().exerciseDao().getIdLessThanSix();
 
             runOnUiThread(() -> {
                 workouts.clear();
