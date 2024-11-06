@@ -32,7 +32,6 @@ public class WorkoutPassed extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //
                 Intent intent = new Intent(WorkoutPassed.this, MainActivity.class);
                 startActivity(intent);
             }
