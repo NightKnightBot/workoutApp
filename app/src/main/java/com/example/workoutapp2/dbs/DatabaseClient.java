@@ -28,6 +28,6 @@ public class DatabaseClient {
 
     // Method to get NutritionDao
     public NutritionDao getNutritionDao() {
-        return exerciseDatabase.getNutritionDao(); // Access NutritionDao from ExerciseDatabase
+        return exerciseDatabase.getNutritionDao();
     }
 }
