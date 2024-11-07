@@ -16,9 +16,12 @@ public interface ExerciseDao {
     @Query("SELECT * FROM exercise")
     List<Exercise> getAllExercises();
 
-    @Query("SELECT * FROM exercise WHERE id > 4")
-    List<Exercise> getIdLessThanFour();
+    @Query("SELECT * FROM exercise WHERE id <= 6")
+    List<Exercise> getIdLessThanSix();
 
     @Query("SELECT COUNT(*) FROM exercise")
     int getRowCount();
+
+    @Query("SELECT * FROM exercise WHERE type=:inp_type")
+    List<Exercise> getExerciseOfType(String inp_type);
 }
