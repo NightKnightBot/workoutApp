@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,17 +35,15 @@ public class MainActivity extends AppCompatActivity {
 
     private GridView gridView;
     private LinearLayout linearLayout;
-
     private ImageView selectedImage;
     private TextView selectedName;
     private TextView selectedDesc;
-    ArrayList<Individual> workouts;
-
+    private ArrayList<Individual> workouts;
     private Button selectWorkout;
+    private Button nutritionTrackerButton; // New button for Nutrition Tracker
+    private Executor executor;
+    private IndividualAdapter adapter;
 
-    Executor executor;
-
-    IndividualAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -58,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         executor = Executors.newSingleThreadExecutor();
-
         workouts = new ArrayList<>();
 
         gridView = findViewById(R.id.gridView);
@@ -67,74 +65,59 @@ public class MainActivity extends AppCompatActivity {
         selectedName = findViewById(R.id.selectedName);
         selectedDesc = findViewById(R.id.selectedDesc);
         selectWorkout = findViewById(R.id.selectWorkout);
+        nutritionTrackerButton = findViewById(R.id.nutritionTrackerButton); // Initialize the new button
 
-//        Add exercise
+        // Add exercise
+        executor.execute(() -> {
+            ExerciseDao dao = DatabaseClient.getInstance(MainActivity.this).getExerciseDatabase().exerciseDao();
+            boolean databaseIsEmpty = dao.getRowCount() == 0;
+            if (databaseIsEmpty) {
+                dao.insertExercise(new Exercise("Exercise 1", R.drawable.one, "Description 1", "chest"));
+                dao.insertExercise(new Exercise("Exercise 2", R.drawable.two, "Description 2", "legs"));
+                dao.insertExercise(new Exercise("Exercise 3", R.drawable.three, "Description 3", "arms"));
+                dao.insertExercise(new Exercise("Exercise 4", R.drawable.four, "Description 4", "back"));
+                dao.insertExercise(new Exercise("Exercise 5", R.drawable.four, "Description 5", "core"));
+                dao.insertExercise(new Exercise("Exercise 6", R.drawable.four, "Description 6", "shoulders"));
 
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                ExerciseDao dao = DatabaseClient.getInstance(MainActivity.this).getExerciseDatabase().exerciseDao();
-                boolean databaseIsEmpty = dao.getRowCount() == 0;
-                if(databaseIsEmpty) {
-                    dao.insertExercise(new Exercise("Exercise 1", R.drawable.one, "Descripton 1", "chest"));
-                    dao.insertExercise(new Exercise("Exercise 2", R.drawable.two, "Descripton 2", "legs"));
-                    dao.insertExercise(new Exercise("Exercise 3", R.drawable.three, "Descripton 3", "arms"));
-                    dao.insertExercise(new Exercise("Exercise 4", R.drawable.four, "Descripton 4", "back"));
-                    dao.insertExercise(new Exercise("Exercise 5", R.drawable.four, "Descripton 5", "core"));
-                    dao.insertExercise(new Exercise("Exercise 6", R.drawable.four, "Descripton 6", "shoulders"));
-                    
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(MainActivity.this, "Database has been populated", Toast.LENGTH_SHORT).show();
-                            loadExercises();
-                        }
-                    });
-                }
-                else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(MainActivity.this, "Database is full", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, "Database has been populated", Toast.LENGTH_SHORT).show();
+                    loadExercises();
+                });
+            } else {
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, "Database is full", Toast.LENGTH_SHORT).show();
+                });
             }
         });
 
         adapter = new IndividualAdapter(this, workouts);
         gridView.setAdapter(adapter);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Glide.with(MainActivity.this).load(workouts.get(position).getImage()).into(selectedImage);
-                selectedName.setText(workouts.get(position).getName());
-                selectedDesc.setText(workouts.get(position).getDescription());
-                slideUp();
-            }
+        gridView.setOnItemClickListener((parent, view, position, id) -> {
+            Glide.with(MainActivity.this).load(workouts.get(position).getImage()).into(selectedImage);
+            selectedName.setText(workouts.get(position).getName());
+            selectedDesc.setText(workouts.get(position).getDescription());
+            slideUp();
         });
 
         loadExercises();
 
-        selectWorkout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, WorkoutSchedule.class);
-                startActivity(intent);
-            }
+        selectWorkout.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, WorkoutSchedule.class);
+            startActivity(intent);
         });
 
-        linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                slideDown();
-            }
+        // Set up the Nutrition Tracker button
+        nutritionTrackerButton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, NutritionTrackerActivity.class);
+            startActivity(intent);
         });
+
+        linearLayout.setOnClickListener(view -> slideDown());
     }
 
     void slideUp() {
-        if(linearLayout.getVisibility()==View.GONE) {
+        if (linearLayout.getVisibility() == View.GONE) {
             linearLayout.setVisibility(View.VISIBLE);
             Animation slideup = AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_up);
             linearLayout.startAnimation(slideup);
@@ -149,10 +132,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (linearLayout.getVisibility()==View.GONE) {
+        if (linearLayout.getVisibility() == View.GONE) {
             super.onBackPressed();
-        }
-        else {
+        } else {
             slideDown();
         }
     }
