@@ -104,52 +104,57 @@ public class PickExercises extends AppCompatActivity {
         exerciseList = new ArrayList<>();
 
         filterSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 crit = filterList.get(position).toLowerCase();
-                Toast.makeText(PickExercises.this, "crit: "+crit, Toast.LENGTH_SHORT).show();
-                Executor executor1 = Executors.newSingleThreadExecutor();
+                Toast.makeText(PickExercises.this, "crit: " + crit, Toast.LENGTH_SHORT).show();
 
-                if(crit.equalsIgnoreCase("All")){
-                    executor1.execute(new Runnable() {
+                // Clear the exercise list first (before fetching data)
+                exerciseList.clear();
+                individuals.clear(); // clear the UI list too
+
+                if (crit.equalsIgnoreCase("All")) {
+                    // Fetch all exercises
+                    executor.execute(new Runnable() {
                         @Override
                         public void run() {
                             exerciseList = DatabaseClient.getInstance(PickExercises.this).getExerciseDatabase().exerciseDao().getAllExercises();
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    // After data is fetched, clear the individuals list and add new items
                                     individuals.clear();
-                                    for (Exercise exercise :
-                                            exerciseList) {
-                                        individuals.add(new Individual(exercise.getImageResource(), exercise.getName(), exercise.getDescription(),exercise.getType()));
+                                    for (Exercise exercise : exerciseList) {
+                                        individuals.add(new Individual(exercise.getImageResource(), exercise.getName(), exercise.getDescription(), exercise.getType()));
                                     }
-                                    adapter.notifyDataSetChanged();
+                                    adapter.notifyDataSetChanged();  // Notify the adapter to refresh the UI
                                 }
                             });
                         }
                     });
-                }
-                else {
-                    executor1.execute(new Runnable() {
+
+                } else {
+                    // Fetch exercises based on selected filter
+                    executor.execute(new Runnable() {
                         @Override
                         public void run() {
                             exerciseList = DatabaseClient.getInstance(PickExercises.this).getExerciseDatabase().exerciseDao().getExerciseOfType(crit);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(PickExercises.this, ""+exerciseList.size(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(PickExercises.this, "" + exerciseList.size(), Toast.LENGTH_SHORT).show();
+                                    // After data is fetched, clear the individuals list and add new items
                                     individuals.clear();
-                                    for (Exercise exercise :
-                                            exerciseList) {
-                                        individuals.add(new Individual(exercise.getImageResource(), exercise.getName(), exercise.getDescription(),exercise.getType()));
+                                    for (Exercise exercise : exerciseList) {
+                                        individuals.add(new Individual(exercise.getImageResource(), exercise.getName(), exercise.getDescription(), exercise.getType()));
                                     }
-                                    adapter.notifyDataSetChanged();
+                                    adapter.notifyDataSetChanged();  // Notify the adapter to refresh the UI
                                 }
                             });
                         }
                     });
                 }
-
             }
 
             @Override
@@ -158,18 +163,9 @@ public class PickExercises extends AppCompatActivity {
             }
         });
 
-
-
-
-        Toast.makeText(PickExercises.this, ""+exerciseList.size(), Toast.LENGTH_SHORT).show();
-
-
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if( !pickedArrayList.contains(individuals.get(i)) ) {
-                    pickedArrayList.add(individuals.get(i));
-                }
                 int currentColor = Color.TRANSPARENT;
 
                 if (view.getBackground() instanceof ColorDrawable) {
