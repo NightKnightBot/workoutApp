@@ -76,13 +76,25 @@ public class MainActivity extends AppCompatActivity {
                 ExerciseDao dao = DatabaseClient.getInstance(MainActivity.this).getExerciseDatabase().exerciseDao();
                 boolean databaseIsEmpty = dao.getRowCount() == 0;
                 if(databaseIsEmpty) {
-                    dao.insertExercise(new Exercise("Exercise 1", R.drawable.one, "Descripton 1", "chest"));
-                    dao.insertExercise(new Exercise("Exercise 2", R.drawable.two, "Descripton 2", "legs"));
-                    dao.insertExercise(new Exercise("Exercise 3", R.drawable.three, "Descripton 3", "arms"));
-                    dao.insertExercise(new Exercise("Exercise 4", R.drawable.four, "Descripton 4", "back"));
-                    dao.insertExercise(new Exercise("Exercise 5", R.drawable.four, "Descripton 5", "core"));
-                    dao.insertExercise(new Exercise("Exercise 6", R.drawable.four, "Descripton 6", "shoulders"));
-                    
+                    dao.insertExercise(new Exercise("Chest Fly", R.drawable.chestflys, "Open and close arms wide", "chest"));
+                    dao.insertExercise(new Exercise("Push Ups", R.drawable.chestpushups, "Lower and raise body from floor", "chest"));
+                    dao.insertExercise(new Exercise("Bench Press", R.drawable.chestpress, "Press weight up from chest", "chest"));
+                    dao.insertExercise(new Exercise("Lunges", R.drawable.legslunges, "Step forward, lowering back knee", "legs"));
+                    dao.insertExercise(new Exercise("Leg Press", R.drawable.legspress, "Push weight away with legs", "legs"));
+                    dao.insertExercise(new Exercise("Squats", R.drawable.legssquats, "Lower hips and bend knees", "legs"));
+                    dao.insertExercise(new Exercise("Hammer Curls", R.drawable.armscurls, "Curl weights with palms facing in", "arms"));
+                    dao.insertExercise(new Exercise("Tricep Dips", R.drawable.armstricepdrips, "Lower body on hands, bending elbows", "arms"));
+                    dao.insertExercise(new Exercise("Bicep Curls", R.drawable.armscurls, "Curl dumbbells toward shoulders", "arms"));
+                    dao.insertExercise(new Exercise("Pull-Ups", R.drawable.backpullups, "Pull body up to bar", "back"));
+                    dao.insertExercise(new Exercise("Lat Pulldown", R.drawable.backpulldown, "Pull bar down to chest", "back"));
+                    dao.insertExercise(new Exercise("Bent-Over Rows", R.drawable.backrows, "Row weight up with a flat back", "back"));
+                    dao.insertExercise(new Exercise("Plank", R.drawable.armscurls, "Hold a straight-arm position", "core"));
+                    dao.insertExercise(new Exercise("Russian Twists", R.drawable.coreuhh, "Twist torse side to side", "core"));
+                    dao.insertExercise(new Exercise("Bicycle Crunches", R.drawable.corebicyclethingy, "Pedal legs with a twist", "core"));
+                    dao.insertExercise(new Exercise("Overhead Shoulder Press", R.drawable.shouldersovpress, "Press weight overhead", "shoulders"));
+                    dao.insertExercise(new Exercise("Lateral Raises", R.drawable.shoulderslaterra, "Lift dumbbells to the side", "shoulders"));
+                    dao.insertExercise(new Exercise("Face Pulls", R.drawable.backpullups, "Pull cable towards face.", "shoulders"));
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
