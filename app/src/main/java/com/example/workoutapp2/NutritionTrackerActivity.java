@@ -1,17 +1,15 @@
 package com.example.workoutapp2;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.workoutapp2.dbs.DatabaseClient;
 
-import com.example.workoutapp2.data.AppDatabase;
-import com.example.workoutapp2.data.Nutrition;
-import com.example.workoutapp2.data.NutritionDao;
+import com.example.workoutapp2.dbs.DatabaseClient;
+import com.example.workoutapp2.dbs.Nutrition;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -32,11 +30,14 @@ public class NutritionTrackerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nutrition_tracker);
 
-        food = findViewById(R.id.slidewoho);
-        cal = findViewById(R.id.editTextCal);
-        protein = findViewById(R.id.editTextPro);
-        carbs = findViewById(R.id.editTextCarb);
-        fats = findViewById(R.id.editTextFat);
+        food = findViewById(R.id.foodName);
+        cal = findViewById(R.id.calories);
+        protein = findViewById(R.id.protein);
+        carbs = findViewById(R.id.carbs);
+        fats = findViewById(R.id.fats);
+
+        Button saveButton = findViewById(R.id.saveNutrition);
+        saveButton.setOnClickListener(v -> saveNutritionData());
     }
 
     private void saveNutritionData() {
@@ -55,15 +56,12 @@ public class NutritionTrackerActivity extends AppCompatActivity {
         nutrition.setFoodName(foodName);
         nutrition.setCalories(Integer.parseInt(calStr));
         nutrition.setProtein(Integer.parseInt(proStr));
-        nutrition.setCarbs(Integer. parseInt(carbStr));
+        nutrition.setCarbs(Integer.parseInt(carbStr));
         nutrition.setFats(Integer.parseInt(fatStr));
 
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                DatabaseClient.getInstance(getApplicationContext()).getNutritionDao().insert(nutrition);
-                runOnUiThread(() -> Toast.makeText(NutritionTrackerActivity.this, "Nutrition data saved", Toast.LENGTH_SHORT).show());
-            }
+        executor.execute(() -> {
+            DatabaseClient.getInstance(getApplicationContext()).getNutritionDao().insert(nutrition);
+            runOnUiThread(() -> Toast.makeText(NutritionTrackerActivity.this, "Nutrition data saved", Toast.LENGTH_SHORT).show());
         });
     }
 }
