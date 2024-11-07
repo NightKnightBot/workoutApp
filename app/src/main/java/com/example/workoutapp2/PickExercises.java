@@ -108,9 +108,6 @@ public class PickExercises extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 crit = filterList.get(position).toLowerCase();
-                Toast.makeText(PickExercises.this, "crit: " + crit, Toast.LENGTH_SHORT).show();
-
-                // Clear the exercise list first (before fetching data)
                 exerciseList.clear();
                 individuals.clear(); // clear the UI list too
 
@@ -143,8 +140,6 @@ public class PickExercises extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(PickExercises.this, "" + exerciseList.size(), Toast.LENGTH_SHORT).show();
-                                    // After data is fetched, clear the individuals list and add new items
                                     individuals.clear();
                                     for (Exercise exercise : exerciseList) {
                                         individuals.add(new Individual(exercise.getImageResource(), exercise.getName(), exercise.getDescription(), exercise.getType()));

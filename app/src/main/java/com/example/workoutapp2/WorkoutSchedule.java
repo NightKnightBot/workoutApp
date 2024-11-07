@@ -67,7 +67,6 @@ public class WorkoutSchedule extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult o) {
                         if(o.getResultCode()== Activity.RESULT_OK) {
-                            Toast.makeText(WorkoutSchedule.this, "Run after back", Toast.LENGTH_SHORT).show();
                             schedulesList.add(ScheduleHolder.getSchedule());
                             for (Schedule schedule1 :
                                     schedulesList) {
@@ -76,7 +75,6 @@ public class WorkoutSchedule extends AppCompatActivity {
                                 }
                             }
                             saveSchedule();
-                            Toast.makeText(WorkoutSchedule.this, ""+schedulesList.size(), Toast.LENGTH_SHORT).show();
                             adapter.notifyDataSetChanged();
                             schedules.setVisibility(View.VISIBLE);
                             noSchedules.setVisibility(View.GONE);
@@ -119,8 +117,6 @@ public class WorkoutSchedule extends AppCompatActivity {
                 return true;
             }
         });
-
-        Toast.makeText(this, ""+schedulesList.size(), Toast.LENGTH_SHORT).show();
 
         if(schedulesList.isEmpty()) {
             schedules.setVisibility(View.GONE);

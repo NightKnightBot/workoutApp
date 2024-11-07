@@ -69,13 +69,12 @@ public class WorkoutSession extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 numberReps.clearFocus();
                 hideKeyboard(view);
+                workoutAdapter.toggleSelection(i);
 
                 if( !clicked.contains(individuals.get(i)) ) {
                     clicked.add(individuals.get(i));
-                    view.setBackgroundColor(ContextCompat.getColor(WorkoutSession.this, R.color.scheduleAdapter));
                     sizeOfList--;
                     if(sizeOfList <= 0) {
-                        Toast.makeText(WorkoutSession.this, "toasty", Toast.LENGTH_SHORT).show();
                         int count = workList.getChildCount();
                         for (int iter = 0; iter<count; iter++) {
                             View viewChild = workList.getChildAt(iter);
