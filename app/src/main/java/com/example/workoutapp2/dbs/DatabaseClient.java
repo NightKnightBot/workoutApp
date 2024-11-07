@@ -6,15 +6,12 @@ import androidx.room.Room;
 
 public class DatabaseClient {
 
-    private Context context;
     private static DatabaseClient instance;
-
-    private ExerciseDatabase exerciseDatabase; // or your specific database name
+    private ExerciseDatabase exerciseDatabase; // Your database class
 
     private DatabaseClient(Context context) {
-        this.context = context;
-        exerciseDatabase = Room.databaseBuilder(context, ExerciseDatabase.class, "your_database_name")
-                .allowMainThreadQueries() //  **NOTE:**  This is for demo. NEVER allow main thread queries in production!
+        exerciseDatabase = Room.databaseBuilder(context, ExerciseDatabase.class, "nutrition_database")
+                .allowMainThreadQueries() // **NOTE:** This is for demo. NEVER allow main thread queries in production!
                 .build();
     }
 
@@ -27,5 +24,10 @@ public class DatabaseClient {
 
     public ExerciseDatabase getExerciseDatabase() {
         return exerciseDatabase;
+    }
+
+    // Method to get NutritionDao
+    public NutritionDao getNutritionDao() {
+        return exerciseDatabase.getNutritionDao(); // Access NutritionDao from ExerciseDatabase
     }
 }
