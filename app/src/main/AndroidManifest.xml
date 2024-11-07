@@ -24,6 +24,7 @@
         <activity
             android:name=".WorkoutSchedule"
             android:exported="false" />
+        <activity android:name=".NutritionTrackerActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">
