@@ -13,4 +13,6 @@ public interface NutritionDao {
 
     @Query("SELECT * FROM nutrition")
     List<Nutrition> getAllNutrition();
+
+    void insert(Nutrition nutrition);
 }
