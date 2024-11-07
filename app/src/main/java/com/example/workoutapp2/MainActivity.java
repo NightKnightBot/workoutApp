@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -114,24 +115,31 @@ public class MainActivity extends AppCompatActivity {
         adapter = new IndividualAdapter(this, workouts);
         gridView.setAdapter(adapter);
 
-        gridView.setOnItemClickListener((parent, view, position, id) -> {
-            Glide.with(MainActivity.this).load(workouts.get(position).getImage()).into(selectedImage);
-            selectedName.setText(workouts.get(position).getName());
-            selectedDesc.setText(workouts.get(position).getDescription());
-            slideUp();
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Glide.with(MainActivity.this).load(workouts.get(position).getImage()).into(selectedImage);
+                selectedName.setText(workouts.get(position).getName());
+                selectedDesc.setText(workouts.get(position).getDescription());
+                slideUp();
+            }
         });
 
         loadExercises();
 
-        selectWorkout.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, WorkoutSchedule.class);
-            startActivity(intent);
+        selectWorkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, WorkoutSchedule.class);
+                startActivity(intent);
+            }
         });
 
-        // Set up the Nutrition Tracker button
-        nutritionTrackerButton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, NutritionTrackerActivity.class);
-            startActivity(intent);
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                slideDown();
+            }
         });
 
         linearLayout.setOnClickListener(view -> slideDown());
