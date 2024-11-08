@@ -11,9 +11,8 @@ public interface NutritionDao {
     @Insert
     void insertNutrition(Nutrition nutrition);
 
-    @Query("SELECT * FROM nutrition")
+    @Query("SELECT * FROM nutrition ORDER BY timestamp DESC") // Order by timestamp
     List<Nutrition> getAllNutrition();
 
-    @Insert
     void insert(Nutrition nutrition);
 }
