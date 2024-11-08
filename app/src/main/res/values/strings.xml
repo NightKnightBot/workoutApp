@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">WorkoutApp2</string>
+    <string name="calories">Calories</string>
+    <string name="fats">Fats</string>
+    <string name="carbs">Carbohydrates</string>
+    <string name="protein">Protein</string>
+    <string name="foodName">Food Name</string>
+    <string name="save">Save</string>
 </resources>
