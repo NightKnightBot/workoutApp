@@ -3,20 +3,24 @@ package com.example.workoutapp2.dbs;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "nutrition_table")
+@Entity(tableName = "nutrition")
 public class Nutrition {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String foodName;
-    private int calories;
-    private int protein;
-    private int carbs;
-    private int fats;
+    private double calories;
+    private double protein;
+    private double carbs;
+    private double fats;
 
-    public Nutrition(String apple, int i, double v, int i1, double v1) {
+    public Nutrition(String foodName, double calories, double protein, double carbs, double fats) {
+        this.foodName = foodName;
+        this.calories = calories;
+        this.protein = protein;
+        this.carbs = carbs;
+        this.fats = fats;
     }
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -33,35 +37,35 @@ public class Nutrition {
         this.foodName = foodName;
     }
 
-    public int getCalories() {
+    public double getCalories() {
         return calories;
     }
 
-    public void setCalories(int calories) {
+    public void setCalories(double calories) {
         this.calories = calories;
     }
 
-    public int getProtein() {
+    public double getProtein() {
         return protein;
     }
 
-    public void setProtein(int protein) {
+    public void setProtein(double protein) {
         this.protein = protein;
     }
 
-    public int getCarbs() {
+    public double getCarbs() {
         return carbs;
     }
 
-    public void setCarbs(int carbs) {
+    public void setCarbs(double carbs) {
         this.carbs = carbs;
     }
 
-    public int getFats() {
+    public double getFats() {
         return fats;
     }
 
-    public void setFats(int fats) {
+    public void setFats(double fats) {
         this.fats = fats;
     }
 }

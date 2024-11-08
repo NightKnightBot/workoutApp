@@ -25,9 +25,4 @@ public class DatabaseClient {
     public ExerciseDatabase getExerciseDatabase() {
         return exerciseDatabase;
     }
-
-    // Method to get NutritionDao
-    public NutritionDao getNutritionDao() {
-        return exerciseDatabase.getNutritionDao();
-    }
 }
