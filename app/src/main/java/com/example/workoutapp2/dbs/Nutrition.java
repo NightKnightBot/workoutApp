@@ -3,7 +3,7 @@ package com.example.workoutapp2.dbs;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "nutrition")
+@Entity(tableName = "nutrition_table")
 public class Nutrition {
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -12,10 +12,8 @@ public class Nutrition {
     private int protein;
     private int carbs;
     private int fats;
-    private long timestamp; // Add this field
 
-    public Nutrition() {
-        // Default constructor
+    public Nutrition(String apple, int i, double v, int i1, double v1) {
     }
 
     // Getters and Setters
@@ -65,13 +63,5 @@ public class Nutrition {
 
     public void setFats(int fats) {
         this.fats = fats;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
     }
 }
