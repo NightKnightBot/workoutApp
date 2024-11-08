@@ -1,8 +1,6 @@
 package com.example.workoutapp2;
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,9 +12,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -28,7 +24,6 @@ import com.example.workoutapp2.dbs.ExerciseDao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class PickExercises extends AppCompatActivity {
@@ -37,15 +32,15 @@ public class PickExercises extends AppCompatActivity {
     private Executor executor;
     private GridView gridView;
     private EditText nameOfSchedule;
-    String crit;
+    String criteria;
     private Spinner filterSpin;
     ArrayList<Individual> individuals;
     List<Individual> scheduleExercises;
-
-    ArrayList<Individual> pickedArrayList;
     IndividualAdapter adapter;
     Schedule schedule;
     List<Exercise> exerciseList;
+
+    int selectedPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,12 +102,16 @@ public class PickExercises extends AppCompatActivity {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                crit = filterList.get(position).toLowerCase();
-                exerciseList.clear();
-                individuals.clear(); // clear the UI list too
+                criteria = filterList.get(position).toLowerCase();
+//                exerciseList.clear();
+//                individuals.clear(); // clear the UI list too
+//                adapter.clearSelection();
 
-                if (crit.equalsIgnoreCase("All")) {
+                if (criteria.equalsIgnoreCase("All")) {
                     // Fetch all exercises
+                    exerciseList.clear();
+                    individuals.clear(); // clear the UI list too
+                    adapter.clearSelection();
                     executor.execute(new Runnable() {
                         @Override
                         public void run() {
@@ -133,10 +132,13 @@ public class PickExercises extends AppCompatActivity {
 
                 } else {
                     // Fetch exercises based on selected filter
+                    exerciseList.clear();
+                    individuals.clear(); // clear the UI list too
+                    adapter.clearSelection();
                     executor.execute(new Runnable() {
                         @Override
                         public void run() {
-                            exerciseList = DatabaseClient.getInstance(PickExercises.this).getExerciseDatabase().exerciseDao().getExerciseOfType(crit);
+                            exerciseList = DatabaseClient.getInstance(PickExercises.this).getExerciseDatabase().exerciseDao().getExerciseOfType(criteria);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -161,24 +163,31 @@ public class PickExercises extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                int currentColor = Color.TRANSPARENT;
-
-                if (view.getBackground() instanceof ColorDrawable) {
-                    currentColor = ((ColorDrawable) view.getBackground()).getColor();
-                }
-
-                // Removing from list
-                if (currentColor == ContextCompat.getColor(PickExercises.this, R.color.backgroundAlt)) {
-                    view.setBackgroundColor(Color.TRANSPARENT);
+//                selectedPosition = i;
+//                int currentColor = Color.TRANSPARENT;
+//
+//                if (view.getBackground() instanceof ColorDrawable) {
+//                    currentColor = ((ColorDrawable) view.getBackground()).getColor();
+//                }
+//
+//                // Removing from list
+//                if (currentColor == ContextCompat.getColor(PickExercises.this, R.color.backgroundAlt)) {
+//                    view.setBackgroundColor(Color.TRANSPARENT);
+//                    scheduleExercises.remove(individuals.get(i));
+//                }
+//
+//                // Adding to List
+//                else {
+//                    view.setBackgroundColor(ContextCompat.getColor(PickExercises.this, R.color.backgroundAlt));
+//                    scheduleExercises.add(individuals.get(i));
+//                }
+                adapter.toggleSelection(i);
+                if(scheduleExercises.contains(individuals.get(i))) {
                     scheduleExercises.remove(individuals.get(i));
                 }
-
-                // Adding to List
                 else {
-                    view.setBackgroundColor(ContextCompat.getColor(PickExercises.this, R.color.backgroundAlt));
                     scheduleExercises.add(individuals.get(i));
                 }
-
             }
         });
 
@@ -186,7 +195,7 @@ public class PickExercises extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Schedule newSchedule = new Schedule(nameOfSchedule.getText().toString(), scheduleExercises);
+                Schedule newSchedule = new Schedule(nameOfSchedule.getText().toString().trim(), scheduleExercises);
                 if(newSchedule.getScheduleName().isEmpty() || newSchedule.getScheduleName().isBlank()) {
                     Toast.makeText(PickExercises.this, "Enter Schedule Name", Toast.LENGTH_SHORT).show();
                 } else if (newSchedule.getExerciseList().isEmpty()) {

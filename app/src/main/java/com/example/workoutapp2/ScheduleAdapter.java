@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,10 +52,12 @@ public class ScheduleAdapter extends ArrayAdapter<Schedule> {
         Schedule schedule = schedules.get(position);
         holder.textViewTitle.setText(schedule.getScheduleName());
 
-        if (selectedItems.get(position)) {
-            convertView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.scheduleAdapter));
-        } else {
-            convertView.setBackgroundColor(Color.TRANSPARENT);
+        if (!selectedItems.isEmpty() && selectedItems.size() > position) {
+            if (selectedItems.get(position)) {
+                convertView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.scheduleAdapter));
+            } else {
+                convertView.setBackgroundColor(Color.TRANSPARENT);
+            }
         }
 
         return convertView;
