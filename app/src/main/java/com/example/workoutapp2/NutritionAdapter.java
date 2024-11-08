@@ -1,51 +1,66 @@
 package com.example.workoutapp2;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.Nullable;
 
 import com.example.workoutapp2.dbs.Nutrition;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class NutritionAdapter extends RecyclerView.Adapter<NutritionAdapter.NutritionViewHolder> {
-    private List<Nutrition> nutritionList;
+public class NutritionAdapter extends ArrayAdapter<Nutrition> {
+    private Context context;
+    private ArrayList<Nutrition> nutritionList;
 
-    public NutritionAdapter(List<Nutrition> nutritionList) {
+    class ViewHolder {
+        TextView foodName, calories, proteins, carbs, fats;
+    }
+
+    public NutritionAdapter(Context context, ArrayList<Nutrition> nutritionList) {
+        super(context, R.layout.item_nutrition);
+        this.context = context;
         this.nutritionList = nutritionList;
     }
 
-    @NonNull
     @Override
-    public NutritionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_2, parent, false);
-        return new NutritionViewHolder(view);
-    }
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_nutrition, parent, false);
+            holder = new ViewHolder();
+            holder.foodName = convertView.findViewById(R.id.foodName);
+            holder.calories = convertView.findViewById(R.id.calories);
+            holder.proteins = convertView.findViewById(R.id.protein);
+            holder.carbs = convertView.findViewById(R.id.carbs);
+            holder.fats = convertView.findViewById(R.id.fats);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-    @Override
-    public void onBindViewHolder(@NonNull NutritionViewHolder holder, int position) {
         Nutrition nutrition = nutritionList.get(position);
         holder.foodName.setText(nutrition.getFoodName());
-        holder.details.setText("Calories: " + nutrition.getCalories() + ", Protein: " + nutrition.getProtein() + "g, Carbs: " + nutrition.getCarbs() + "g, Fats: " + nutrition.getFats() + "g");
+        holder.calories.setText(""+nutrition.getCalories());
+        holder.proteins.setText(""+nutrition.getProtein());
+        holder.carbs.setText(""+nutrition.getCarbs());
+        holder.fats.setText(""+nutrition.getFats());
+
+        return convertView;
     }
 
     @Override
-    public int getItemCount() {
+    public int getCount() {
         return nutritionList.size();
     }
 
-    static class NutritionViewHolder extends RecyclerView.ViewHolder {
-        TextView foodName;
-        TextView details;
-
-        NutritionViewHolder(View itemView) {
-            super(itemView);
-            foodName = itemView.findViewById(android.R.id.text1);
-            details = itemView.findViewById(android.R.id.text2);
-        }
+    @Nullable
+    @Override
+    public Nutrition getItem(int position) {
+        return nutritionList.get(position);
     }
 }
