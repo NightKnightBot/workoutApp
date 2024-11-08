@@ -12,13 +12,10 @@ public class Nutrition {
     private int protein;
     private int carbs;
     private int fats;
+    private long timestamp; // Add this field
 
     public Nutrition() {
-        this.foodName = foodName;
-        this.calories = calories;
-        this.protein = protein;
-        this.carbs = carbs;
-        this.fats = fats;
+        // Default constructor
     }
 
     // Getters and Setters
@@ -68,5 +65,13 @@ public class Nutrition {
 
     public void setFats(int fats) {
         this.fats = fats;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }
