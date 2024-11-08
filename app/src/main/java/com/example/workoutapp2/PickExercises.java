@@ -99,13 +99,16 @@ public class PickExercises extends AppCompatActivity {
         exerciseList = new ArrayList<>();
 
         filterSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 criteria = filterList.get(position).toLowerCase();
+                Toast.makeText(PickExercises.this, "criteria: "+criteria, Toast.LENGTH_SHORT).show();
 //                exerciseList.clear();
 //                individuals.clear(); // clear the UI list too
-//                adapter.clearSelection();
+                scheduleExercises.clear();
+                adapter.clearSelection();
+
+                Toast.makeText(PickExercises.this, "exerciseList"+exerciseList.size()+"\nindividuals"+individuals.size(), Toast.LENGTH_SHORT).show();
 
                 if (criteria.equalsIgnoreCase("All")) {
                     // Fetch all exercises
@@ -163,24 +166,6 @@ public class PickExercises extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                selectedPosition = i;
-//                int currentColor = Color.TRANSPARENT;
-//
-//                if (view.getBackground() instanceof ColorDrawable) {
-//                    currentColor = ((ColorDrawable) view.getBackground()).getColor();
-//                }
-//
-//                // Removing from list
-//                if (currentColor == ContextCompat.getColor(PickExercises.this, R.color.backgroundAlt)) {
-//                    view.setBackgroundColor(Color.TRANSPARENT);
-//                    scheduleExercises.remove(individuals.get(i));
-//                }
-//
-//                // Adding to List
-//                else {
-//                    view.setBackgroundColor(ContextCompat.getColor(PickExercises.this, R.color.backgroundAlt));
-//                    scheduleExercises.add(individuals.get(i));
-//                }
                 adapter.toggleSelection(i);
                 if(scheduleExercises.contains(individuals.get(i))) {
                     scheduleExercises.remove(individuals.get(i));
