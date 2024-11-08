@@ -41,7 +41,7 @@
             android:layout_height="520dp"
             android:layout_marginHorizontal="12dp"
             android:layout_marginVertical="5dp"
-            android:numColumns="2"
+            android:numColumns="3"
             android:scrollbarAlwaysDrawVerticalTrack="true" />
 
     <Button

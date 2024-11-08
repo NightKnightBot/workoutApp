@@ -1,6 +1,7 @@
 package com.example.workoutapp2;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class IndividualAdapter extends ArrayAdapter<Individual> {
 
@@ -24,7 +27,7 @@ public class IndividualAdapter extends ArrayAdapter<Individual> {
 
     Context context;
     ArrayList<Individual> individuals;
-
+    Set<Integer> selectedItems = new HashSet<>();
     public IndividualAdapter(@NonNull Context context, ArrayList<Individual> individuals) {
         super(context, R.layout.individual);
         this.context = context;
@@ -46,11 +49,29 @@ public class IndividualAdapter extends ArrayAdapter<Individual> {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        if (selectedItems.contains(position)) {
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.backgroundAlt)); // Highlight color
+        } else {
+            convertView.setBackgroundColor(Color.TRANSPARENT); // Default color
+        }
+
         Individual individual = individuals.get(position);
         Glide.with(context).load(individual.getImage()).into(holder.image);
         holder.name.setText(individual.getName());
-
         return convertView;
+    }
+
+    public void toggleSelection(int position) {
+        if (selectedItems.contains(position)) {
+            selectedItems.remove(position);
+        } else {
+            selectedItems.add(position);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void clearSelection() {
+        selectedItems.clear();
     }
 
     @Override
