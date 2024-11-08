@@ -14,66 +14,62 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="12dp"
         android:hint="Name of food">
         <EditText
             android:id="@+id/foodName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name of food"
-            android:layout_margin="12dp"
             android:inputType="text"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="12dp"
         android:hint="Calories">
 
         <EditText
             android:id="@+id/calories"
-            android:layout_margin="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"/>
+            android:inputType="numberDecimal"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:hint="Fats"
+        android:layout_margin="12dp"
         android:layout_height="wrap_content">
-
         <EditText
             android:id="@+id/fats"
-            android:layout_margin="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"/>
+            android:inputType="numberDecimal"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="12dp"
         android:hint="Carbohydrates">
-
         <EditText
             android:id="@+id/carbs"
-            android:layout_margin="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"/>
+            android:inputType="numberDecimal"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="12dp"
         android:hint="Protein">
-
         <EditText
             android:id="@+id/protein"
-            android:layout_margin="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"/>
+            android:inputType="numberDecimal"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -87,7 +83,7 @@
     <ListView
         android:id="@+id/nutritionListView"
         android:layout_width="match_parent"
-        android:layout_height="275dp"
+        android:layout_height="200dp"
         android:layout_margin="12dp" />
 
 
