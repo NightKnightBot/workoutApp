@@ -81,8 +81,13 @@ public class NutritionTrackerActivity extends AppCompatActivity {
                                     Double.parseDouble(carbs.getText().toString().trim()),
                                     Double.parseDouble(fats.getText().toString().trim())
                             ));
-                            getNutrition.clear();
                             getNutrition.addAll(DatabaseClient.getInstance(NutritionTrackerActivity.this).getExerciseDatabase().getNutritionDao().getAllNutrition());
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nutritionAdapter.notifyDataSetChanged();
+                                }
+                            });
                         }
                     });
                     Toast.makeText(NutritionTrackerActivity.this, "Data Reloaded", Toast.LENGTH_SHORT).show();

@@ -102,14 +102,8 @@ public class PickExercises extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 criteria = filterList.get(position).toLowerCase();
-                Toast.makeText(PickExercises.this, "criteria: "+criteria, Toast.LENGTH_SHORT).show();
-//                exerciseList.clear();
-//                individuals.clear(); // clear the UI list too
                 scheduleExercises.clear();
                 adapter.clearSelection();
-
-                Toast.makeText(PickExercises.this, "exerciseList"+exerciseList.size()+"\nindividuals"+individuals.size(), Toast.LENGTH_SHORT).show();
-
                 if (criteria.equalsIgnoreCase("All")) {
                     // Fetch all exercises
                     exerciseList.clear();
